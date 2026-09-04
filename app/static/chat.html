@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金融智能客服</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-dark: #1e429f;
+    --bg: #f3f5f9;
+    --card: #ffffff;
+    --user-bubble: #1a56db;
+    --bot-bubble: #eef2f8;
+    --text: #1f2937;
+    --text-light: #6b7280;
+    --border: #e5e7eb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  header .logo {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  header h1 { font-size: 18px; font-weight: 600; }
+  header p { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .quick-bar {
+    display: flex; gap: 8px; padding: 10px 24px;
+    background: var(--card); border-bottom: 1px solid var(--border);
+    overflow-x: auto; flex-shrink: 0;
+  }
+  .quick-bar button {
+    white-space: nowrap; flex-shrink: 0;
+    border: 1px solid var(--border); background: #fff;
+    color: var(--primary); border-radius: 999px;
+    padding: 6px 14px; font-size: 13px; cursor: pointer;
+    transition: all .15s;
+  }
+  .quick-bar button:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+  main {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .msg { display: flex; gap: 10px; max-width: 82%; animation: fadeIn .25s ease; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .msg.bot .avatar { background: #dbeafe; }
+  .msg.user .avatar { background: #c7d2fe; }
+  .bubble {
+    padding: 10px 14px; border-radius: 14px; font-size: 14px;
+    line-height: 1.7; word-break: break-word; white-space: pre-wrap;
+  }
+  .msg.bot .bubble { background: var(--bot-bubble); border-top-left-radius: 4px; }
+  .msg.user .bubble { background: var(--user-bubble); color: #fff; border-top-right-radius: 4px; }
+  .bubble .meta { font-size: 11px; color: var(--text-light); margin-top: 6px; }
+  .msg.user .bubble .meta { color: rgba(255,255,255,.75); }
+  .typing { display: inline-flex; gap: 4px; padding: 4px 2px; }
+  .typing span {
+    width: 7px; height: 7px; background: var(--text-light);
+    border-radius: 50%; animation: blink 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: .2s; }
+  .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,80%,100% { opacity: .3; } 40% { opacity: 1; } }
+  footer {
+    display: flex; gap: 10px; padding: 12px 24px 16px;
+    background: var(--card); border-top: 1px solid var(--border);
+  }
+  footer textarea {
+    flex: 1; resize: none; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; font-size: 14px;
+    font-family: inherit; outline: none; max-height: 120px; line-height: 1.5;
+  }
+  footer textarea:focus { border-color: var(--primary); }
+  footer button {
+    align-self: flex-end;
+    background: var(--primary); color: #fff; border: none;
+    border-radius: 10px; padding: 10px 22px; font-size: 14px;
+    cursor: pointer; transition: background .15s;
+  }
+  footer button:hover { background: var(--primary-dark); }
+  footer button:disabled { opacity: .5; cursor: not-allowed; }
+  .hint { text-align: center; font-size: 12px; color: var(--text-light); padding-bottom: 4px; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">💼</div>
+    <div>
+      <h1>金融智能客服</h1>
+      <p>理财 · 基金 · 保险 · 持仓 · 风险测评 · 收益测算</p>
+    </div>
+  </header>
+
+  <div class="quick-bar" id="quickBar">
+    <button data-q="有什么理财产品推荐">💎 理财咨询</button>
+    <button data-q="查一下基金净值">📈 基金查询</button>
+    <button data-q="重疾险多少钱一年">🛡️ 保险咨询</button>
+    <button data-q="我的持仓收益怎么样">📊 持仓查询</button>
+    <button data-q="我想做风险测评">📋 风险测评</button>
+    <button data-q="10万买一年能赚多少">🧮 收益测算</button>
+  </div>
+
+  <main id="chatArea"></main>
+
+  <footer>
+    <textarea id="input" placeholder="请输入您的问题，例如：有什么理财产品推荐…" rows="1"></textarea>
+    <button id="sendBtn">发送</button>
+  </footer>
+  <div class="hint">本系统为金融信息咨询与业务咨询服务，不提供资金交易操作。理财非存款，产品有风险，投资须谨慎。</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var chatArea = document.getElementById("chatArea");
+  var input = document.getElementById("input");
+  var sendBtn = document.getElementById("sendBtn");
+
+  // 会话 ID：存 localStorage，刷新后保持同一会话（对话上下文延续）
+  var sessionId = localStorage.getItem("finance_chat_session");
+  if (!sessionId) {
+    sessionId = String(Date.now() % 100000 + 100000);
+    localStorage.setItem("finance_chat_session", sessionId);
+  }
+
+  var isBusy = false;
+
+  // —— 极简 Markdown 渲染（加粗 / 换行 / 列表）——
+  function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  function renderMarkdown(text) {
+    var lines = text.split("\n");
+    var html = "";
+    var inList = false;
+    lines.forEach(function (line) {
+      var trimmed = line.trim();
+      if (!trimmed) { if (inList) { html += "</div>"; inList = false; } return; }
+      var listMatch = trimmed.match(/^[-*•]\s+(.*)$/);
+      var numMatch = trimmed.match(/^\d+[.、]\s*(.*)$/);
+      if (listMatch || numMatch) {
+        var item = listMatch ? listMatch[1] : numMatch[1];
+        if (!inList) { html += "<div style='margin:4px 0'>"; inList = true; }
+        html += "<div>• " + inline(item) + "</div>";
+      } else {
+        if (inList) { html += "</div>"; inList = false; }
+        html += "<div>" + inline(trimmed) + "</div>";
+      }
+    });
+    if (inList) html += "</div>";
+    return html;
+  }
+  function inline(text) {
+    var escaped = escapeHtml(text);
+    return escaped.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                  .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  }
+
+  // —— 消息气泡 ——
+  function addMessage(role, content, meta) {
+    var wrap = document.createElement("div");
+    wrap.className = "msg " + role;
+
+    var avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = role === "user" ? "🙂" : "🤖";
+
+    var bubble = document.createElement("div");
+    bubble.className = "bubble";
+    if (role === "bot") {
+      bubble.innerHTML = renderMarkdown(content);
+    } else {
+      bubble.textContent = content;
+    }
+    if (meta) {
+      var metaEl = document.createElement("div");
+      metaEl.className = "meta";
+      metaEl.textContent = meta;
+      bubble.appendChild(metaEl);
+    }
+
+    wrap.appendChild(avatar);
+    wrap.appendChild(bubble);
+    chatArea.appendChild(wrap);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  function addTyping() {
+    var wrap = document.createElement("div");
+    wrap.className = "msg bot";
+    wrap.id = "typingMsg";
+    var avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = "🤖";
+    var bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+    wrap.appendChild(avatar);
+    wrap.appendChild(bubble);
+    chatArea.appendChild(wrap);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+  function removeTyping() {
+    var el = document.getElementById("typingMsg");
+    if (el) el.remove();
+  }
+
+  // —— 发送消息 ——
+  function send(text) {
+    text = (text || "").trim();
+    if (!text || isBusy) return;
+    isBusy = true;
+    sendBtn.disabled = true;
+    input.value = "";
+
+    addMessage("user", text);
+    addTyping();
+
+    fetch("/api/v1/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text, session_id: Number(sessionId) })
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        removeTyping();
+        var content = data.content || "（未获取到回复）";
+        var metaParts = [];
+        var pending = (data.dialogue_state && data.dialogue_state.pending_slots) || [];
+        if (pending && pending.length) {
+          metaParts.push("待补充信息：" + pending.join("、"));
+        }
+        var sources = data.sources;
+        if (sources && sources.length) {
+          metaParts.push("参考来源：" + sources.length + " 条");
+        }
+        addMessage("bot", content, metaParts.length ? metaParts.join("　") : null);
+      })
+      .catch(function (err) {
+        removeTyping();
+        addMessage("bot", "抱歉，服务暂时不可用，请稍后重试。\n（" + err.message + "）");
+      })
+      .finally(function () {
+        isBusy = false;
+        sendBtn.disabled = false;
+        input.focus();
+      });
+  }
+
+  // —— 事件绑定 ——
+  sendBtn.addEventListener("click", function () { send(input.value); });
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      send(input.value);
+    }
+  });
+  input.addEventListener("input", function () {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 120) + "px";
+  });
+  document.getElementById("quickBar").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (btn && btn.dataset.q) send(btn.dataset.q);
+  });
+
+  // —— 欢迎语 ——
+  addMessage("bot", "您好！我是**金融智能客服**，可以为您提供以下服务：\n\n"
+    + "• **理财咨询**：根据您的风险承受等级推荐合适产品\n"
+    + "• **基金查询**：查询基金净值、费率与规模\n"
+    + "• **保险咨询**：了解重疾/医疗/意外等险种保障\n"
+    + "• **持仓查询**：查看您的持有与收益情况\n"
+    + "• **风险测评**：5 题问卷评估风险承受等级\n"
+    + "• **收益测算**：按金额与期限估算预期收益\n\n"
+    + "请问有什么可以帮您？");
+})();
+</script>
+</body>
+</html>

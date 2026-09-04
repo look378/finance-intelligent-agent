@@ -1,0 +1,124 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Testing
+.pytest_cache/
+pytest-cache-files-*/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Ruff
+.ruff_cache/
+
+# Distribution / packaging
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Docker
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+artifacts/
+temp/
+tmp/
+*.swp
+*.swo
+*~
+
+# Alembic
+migrations/versions/*.pyc
+.claude/settings.local.json
+CLAUDE.md
+docs/phase1-summary.md
+docs/phase2-summary.md
+docs/phase3-summary.md
+docs/phase4-summary.md
+docs/phase5-summary.md
+docs/phase6-summary.md
+docs/phase7-summary.md
+docs/phase8-summary.md
+docs/phase9-summary.md
+GLM_QUICKSTART.md
+IMPLEMENTATION_SUMMARY.md
+TOKEN_OPTIMIZATION_COMPLETE.md
+
+# oh-my-claudecode
+.omc/
+
+# Test/sample data
+/data/
+
+# Local ML models (large binaries, download via scripts/init_kb.py)
+/models/
+.modelscope-cache/
+.modelscope-home/
+.pip-tmp/
+.pipwork/
+.pip-cache/
